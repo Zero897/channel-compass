@@ -1,0 +1,4 @@
+﻿customer_id,customer_name,region,channel_tier,cooperation_months,credit_limit,credit_term_days,data_source
+C001,稳健数科,华东,一级,72,700000,30,synthetic
+C002,华南智联,华南,二级,48,600000,45,synthetic
+C003,东启科技,华东,二级,30,250000,30,synthetic

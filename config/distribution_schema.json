@@ -1,0 +1,43 @@
+{
+  "business_type": "distribution",
+  "version": "0.1",
+  "tables": {
+    "sales": {
+      "file": "distribution_sales.csv",
+      "fields": {
+        "sale_id": "sale_id",
+        "sale_date": "sale_date",
+        "customer_id": "customer_id",
+        "sales_amount": "sales_amount",
+        "sku_id": "sku_id",
+        "quantity": "quantity",
+        "region": "region",
+        "channel_tier": "channel_tier"
+      },
+      "required": ["sale_id", "sale_date", "customer_id", "sales_amount"]
+    },
+    "payments": {
+      "file": "distribution_payments.csv",
+      "fields": {
+        "payment_id": "payment_id",
+        "payment_date": "payment_date",
+        "customer_id": "customer_id",
+        "payment_amount": "payment_amount",
+        "related_document_id": "related_document_id"
+      },
+      "required": ["payment_id", "payment_date", "customer_id", "payment_amount"]
+    },
+    "ar_snapshots": {
+      "file": "distribution_ar_snapshot.csv",
+      "fields": {
+        "snapshot_date": "snapshot_date",
+        "customer_id": "customer_id",
+        "receivable_balance": "receivable_balance",
+        "overdue_balance": "overdue_balance",
+        "max_overdue_days": "max_overdue_days",
+        "open_document_count": "open_document_count"
+      },
+      "required": ["snapshot_date", "customer_id", "receivable_balance"]
+    }
+  }
+}

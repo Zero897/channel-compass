@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets
+.env
+.env.*
+*.secret
+credentials*.json
+
+# Enterprise data and derived outputs
+data/company/
+data/processed/
+data/reports/
+data/exports/
+data/feedback/task_feedback.csv
+
+# Enterprise-trained model files
+models/
+*.joblib
+
+# Local packages and work records
+dist/
+worklogs/
+src.zip
+*.log
+
+# Company-derived samples and reports
+data/sample_company_schema/
+demo_output/企业处置任务_演示记录.csv
+docs/judge_cases.md
+docs/company_data_audit.md
+docs/model_training_report.md

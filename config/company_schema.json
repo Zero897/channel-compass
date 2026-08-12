@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "source": "AFFT模拟数据集",
+  "identifier_normalization": "按字符串读取；纯数字标识末尾的.0在接入层去除",
+  "primary_model_target": {
+    "unit": "销售订单",
+    "prediction_time": "出库时",
+    "label_table": "业务回款明细.csv",
+    "label_field": "是否超期",
+    "positive_value": "Y"
+  },
+  "tables": {
+    "sales": {
+      "file": "销售流水.csv",
+      "grain": "出库单行",
+      "primary_date": "出库日期",
+      "customer_key": "客户编号",
+      "order_key": "销售订单号",
+      "contract_key": "合同号",
+      "amount": "销售金额_折扣后_含税"
+    },
+    "payments": {
+      "file": "业务回款明细.csv",
+      "grain": "发票级回款",
+      "primary_date": "回款日期",
+      "customer_key": "客户编号",
+      "order_key": "销售订单号",
+      "contract_key": "合同号",
+      "amount": "回款金额"
+    },
+    "contracts": {
+      "file": "增值合同签约明细.csv",
+      "grain": "项目合同行",
+      "primary_date": "申请日期",
+      "contract_key": "合同编号",
+      "amount": "销售金额"
+    },
+    "ar_snapshots": {
+      "file": "应收快照_月末24期.csv",
+      "grain": "快照×客户×合同×销售订单×物料",
+      "primary_date": "快照时间",
+      "customer_key": "客户编号",
+      "order_key": "销售订单号",
+      "contract_key": "合同号",
+      "amount": "应收金额"
+    },
+    "inventory_snapshots": {
+      "file": "库龄快照_季末8期.csv",
+      "grain": "快照×物料×批次×仓库",
+      "primary_date": "快照日期",
+      "material_key": "物料编码",
+      "amount": "含税总价"
+    },
+    "extensions": {
+      "file": "展期记录.csv",
+      "grain": "展期单明细",
+      "primary_date": "快照时间",
+      "customer_key": "客户编号",
+      "order_key": "销售订单号",
+      "contract_key": "合同号",
+      "amount": "应收金额"
+    },
+    "credit": {
+      "file": "客户授信.csv",
+      "grain": "客户当前状态",
+      "customer_key": "客户编号_中台",
+      "amount": "授信额度"
+    }
+  }
+}

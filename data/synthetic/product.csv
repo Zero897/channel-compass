@@ -1,0 +1,6 @@
+﻿sku_id,sku_name,brand,category,launch_date,eol_date,unit_price,data_source
+S001,企业路由器 R1,A品牌,网络设备,2025-01-06,,1800,synthetic
+S002,千兆交换机 S8,A品牌,网络设备,2024-09-02,,1200,synthetic
+S003,商用终端 T5,A品牌,智能终端,2025-03-03,,2600,synthetic
+S004,存储节点 N2,A品牌,存储,2024-11-04,,3200,synthetic
+S005,安全网关 G3,A品牌,安全,2025-05-05,,2800,synthetic

@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "data_source": "portable_synthetic_demo",
+  "train_rows": 144,
+  "test_rows": 72,
+  "test_pr_auc": 0.310034,
+  "test_roc_auc": 0.638393,
+  "risk_events": 15,
+  "threshold_policy": "训练期风险输出前20%对应阈值，固定后应用于未来测试期",
+  "outputs": [
+    "raw_transactions.csv",
+    "model_features.csv",
+    "dashboard_risk_events.csv"
+  ]
+}

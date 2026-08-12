@@ -1,0 +1,1 @@
+# Legacy three-customer demo only; use requirements-lock.txt for the submitted enterprise prototype.

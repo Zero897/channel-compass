@@ -1,0 +1,21 @@
+{
+  "company_data_dir": "data/company/AFFT模拟数据集",
+  "processed_dir": "data/processed",
+  "reports_dir": "data/reports",
+  "models_dir": "models",
+  "docs_dir": "docs",
+  "feishu_dir": "data/exports/feishu",
+  "feedback_path": "data/feedback/task_feedback.csv",
+  "prototype_scope": {
+    "scope_type": "入围赛展示范围，不限制主模型训练全集",
+    "brand_proxy": "品牌98产品线",
+    "regions": ["华北", "东北"],
+    "start_date": "2024-08-01",
+    "end_date": "2026-07-31",
+    "dynamic_due": {
+      "run_mode": "historical_replay",
+      "run_date": "2026-08-12",
+      "max_data_age_days": 3
+    }
+  }
+}

@@ -1,0 +1,18 @@
+project: 渠智罗盘
+as_of_date: 2026-08-03
+random_seed: 20260803
+health_weights:
+  revenue_quality: 0.20
+  inventory_health: 0.25
+  payment_ability: 0.25
+  credit_exposure: 0.20
+  cooperation_stability: 0.10
+risk_thresholds:
+  healthy_green_min: 80
+  healthy_yellow_min: 60
+  inventory_coverage_weeks: 8
+  inventory_age_days: 90
+  sales_decline_ratio: 0.20
+  overdue_amount_ratio: 0.20
+  on_time_payment_rate: 0.70
+  credit_utilization_ratio: 0.85

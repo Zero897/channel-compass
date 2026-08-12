@@ -1,0 +1,2 @@
+﻿intervention_id,risk_event_id,customer_id,action_type,owner,status,created_at,completed_at,result,data_source
+IV001,R010,C003,平衡干预,成员B,已完成,2026-08-03T10:00:00+08:00,2026-08-03T10:30:00+08:00,完成客户沟通，安排库存调拨，建议复核额度,synthetic
