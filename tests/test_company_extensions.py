@@ -116,9 +116,17 @@ class CompanyExtensionsTest(unittest.TestCase):
             (REPORTS / "process_event_log_audit.json").read_text(encoding="utf-8")
         )
         rows = _read_csv(FEISHU / "企业风险处置时间线.csv")
+        tasks = _read_csv(FEISHU / "企业处置任务.csv")
+        completed_tasks = {
+            row["任务编号"] for row in tasks if row.get("完成时间", "").strip()
+        }
+        feedback_rows = [row for row in rows if row["流程阶段"] == "结果回流"]
         self.assertGreater(len(rows), 0)
-        self.assertEqual(report["feedback_rows"], 0)
-        self.assertFalse(any(row["流程阶段"] == "结果回流" for row in rows))
+        self.assertEqual(report["feedback_rows"], len(completed_tasks))
+        self.assertEqual(len(feedback_rows), len(completed_tasks))
+        self.assertEqual(
+            {row["关联任务编号"] for row in feedback_rows}, completed_tasks
+        )
         self.assertTrue(all(row["过程事件编号"].startswith("PE-") for row in rows))
         self.assertTrue(all(row["对象类型"] for row in rows))
         self.assertTrue(all("关联任务编号" in row for row in rows))

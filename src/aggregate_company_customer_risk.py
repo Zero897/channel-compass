@@ -307,6 +307,8 @@ def _preserve_task_state(tasks: pd.DataFrame, existing_path: Path) -> pd.DataFra
     if "任务编号" not in existing.columns:
         return tasks
     state_fields = [
+        "创建时间",
+        "截止日期",
         "人工处置方案",
         "负责人",
         "审批状态",
@@ -330,6 +332,20 @@ def _preserve_task_state(tasks: pd.DataFrame, existing_path: Path) -> pd.DataFra
             mask &= historical_value != "待分配"
         merged.loc[mask, field] = merged.loc[mask, historical]
     return merged.drop(columns=[f"{field}_历史" for field in available])
+
+
+def _preserve_event_state(events: pd.DataFrame, existing_path: Path) -> pd.DataFrame:
+    if not existing_path.exists() or events.empty:
+        return events
+    existing = pd.read_csv(existing_path, dtype="string").fillna("")
+    if "事件编号" not in existing.columns or "触发时间" not in existing.columns:
+        return events
+    prior = existing[["事件编号", "触发时间"]].drop_duplicates("事件编号", keep="last")
+    merged = events.merge(prior, on="事件编号", how="left", suffixes=("", "_历史"))
+    historical = merged["触发时间_历史"].fillna("").astype(str).str.strip()
+    mask = historical != ""
+    merged.loc[mask, "触发时间"] = merged.loc[mask, "触发时间_历史"]
+    return merged.drop(columns=["触发时间_历史"])
 
 
 def _write_demo_task_cases(tasks: pd.DataFrame, path: Path) -> None:
@@ -468,6 +484,7 @@ def aggregate_customer_risk(
     events, tasks = _events_and_tasks(
         overview, predictive_orders, latest_snapshot, model_name, threshold
     )
+    events = _preserve_event_state(events, feishu_dir / "企业风险事件.csv")
     tasks = _preserve_task_state(tasks, feishu_dir / "企业处置任务.csv")
     _write_demo_task_cases(tasks, PROJECT_ROOT / "demo_output" / "企业处置任务_演示记录.csv")
     _write_judge_cases(

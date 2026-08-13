@@ -16,6 +16,8 @@ REPORT_FILES = {
     "customer_risk_aggregation_audit.json",
     "early_warning_evidence_audit.json",
     "feature_importance.csv",
+    "frozen_company_pipeline_summary.json",
+    "frozen_inference.json",
     "inventory_health_audit.json",
     "logistic_coefficients.csv",
     "model_comparison.csv",
@@ -46,10 +48,14 @@ FEISHU_TABLE_FILES = {
 
 def _package_files() -> list[Path]:
     files = [
+        PROJECT_ROOT / ".env.example",
         PROJECT_ROOT / "README.md",
         PROJECT_ROOT / "requirements.txt",
         PROJECT_ROOT / "requirements-ml.txt",
         PROJECT_ROOT / "requirements-lock.txt",
+        PROJECT_ROOT / "requirements-feishu.txt",
+        PROJECT_ROOT / "requirements-backend.txt",
+        PROJECT_ROOT / "requirements-all.txt",
     ]
     for directory, pattern in (
         (PROJECT_ROOT / "config", "*"),
@@ -86,6 +92,8 @@ def build_package(output_path: Path) -> dict[str, object]:
         "file_count": len(files),
         "files": manifest_files,
         "excluded_large_artifacts": [
+            ".env",
+            "data/feedback/task_feedback.csv",
             "data/reports/holdout_risk_scores.csv",
             "data/reports/test_predictions.csv",
             "data/processed/order_features.csv",
@@ -93,10 +101,11 @@ def build_package(output_path: Path) -> dict[str, object]:
         ],
         "reproduction": {
             "create_environment": "python -m venv .venv",
-            "install": "& .\\.venv\\Scripts\\python.exe -m pip install -r requirements-lock.txt",
+            "install": "& .\\.venv\\Scripts\\python.exe -m pip install -r requirements-all.txt",
             "portable_demo": "& .\\.venv\\Scripts\\python.exe src\\run_portable_demo.py",
-            "tests": "& .\\.venv\\Scripts\\python.exe -m unittest discover -s tests -v",
-            "enterprise_pipeline": "补齐data/company/AFFT模拟数据集后运行：& .\\.venv\\Scripts\\python.exe src\\run_company_pipeline.py",
+            "public_tests": "& .\\.venv\\Scripts\\python.exe -m unittest tests.test_pipeline tests.test_portable_demo tests.test_backend_api tests.test_feishu_sync tests.test_run_control_store tests.test_run_service -v",
+            "frozen_enterprise_inference": "补齐data/company/AFFT模拟数据集后运行：& .\\.venv\\Scripts\\python.exe src\\run_frozen_company_pipeline.py",
+            "administrator_retraining": "仅重新训练和冻结模型时运行：& .\\.venv\\Scripts\\python.exe src\\run_company_pipeline.py",
         },
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -121,7 +130,7 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=PROJECT_ROOT / "dist" / "渠智罗盘_提交包_20260812.zip",
+        default=PROJECT_ROOT / "dist" / "渠智罗盘_比赛提交包_20260813.zip",
     )
     args = parser.parse_args()
     result = build_package(args.output)

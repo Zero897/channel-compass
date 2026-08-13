@@ -16,7 +16,7 @@ def _task_sla(task: dict[str, object]) -> str:
     completed = pd.to_datetime(str(task.get("完成时间", "")), errors="coerce")
     status = str(task.get("执行状态", ""))
     if status == "已完成" and pd.notna(completed) and pd.notna(due):
-        return "按期完成" if completed.normalize() <= due.normalize() else "超时完成"
+        return "按期完成" if completed.date() <= due.date() else "超时完成"
     if pd.notna(due) and due.date() < date.today():
         return "已超时"
     return "SLA内待处理"
@@ -189,13 +189,13 @@ def build_process_event_log(
         else {}
     )
     warning_times = {
-        row["事件编号"]: pd.to_datetime(row["触发时间"], errors="coerce")
+        row["事件编号"]: pd.to_datetime(row["触发时间"], errors="coerce", utc=True)
         for row in events.to_dict("records")
     }
     task_delays = []
     for task in tasks.to_dict("records"):
         warning = warning_times.get(task["风险事件编号"])
-        created = pd.to_datetime(task.get("创建时间", ""), errors="coerce")
+        created = pd.to_datetime(task.get("创建时间", ""), errors="coerce", utc=True)
         if pd.notna(warning) and pd.notna(created):
             task_delays.append(max((created - warning).total_seconds() / 3600.0, 0.0))
     sla_violations = sum(value in {"已超时", "超时完成"} for value in sla_values)

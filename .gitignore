@@ -11,6 +11,7 @@ __pycache__/
 # Secrets
 .env
 .env.*
+!.env.example
 *.secret
 credentials*.json
 
@@ -27,9 +28,12 @@ models/
 
 # Local packages and work records
 dist/
+outputs/
 worklogs/
 src.zip
 *.log
+task_plan.md
+notes.md
 
 # Company-derived samples and reports
 data/sample_company_schema/

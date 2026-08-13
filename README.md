@@ -56,7 +56,7 @@ flowchart LR
 git clone https://github.com/Zero897/channel-compass.git
 cd channel-compass
 python -m venv .venv
-& ".\.venv\Scripts\python.exe" -m pip install -r requirements-lock.txt
+& ".\.venv\Scripts\python.exe" -m pip install -r requirements-all.txt
 ```
 
 ### 2. 运行便携演示
@@ -81,17 +81,29 @@ python -m venv .venv
 
 便携演示用于证明代码链路可运行，其指标不代表企业真实效果。
 
-### 3. 运行测试
+### 3. 运行公开环境测试
 
 ```powershell
-& ".\.venv\Scripts\python.exe" -m unittest discover -s tests -v
+& ".\.venv\Scripts\python.exe" -m unittest `
+  tests.test_pipeline `
+  tests.test_portable_demo `
+  tests.test_backend_api `
+  tests.test_feishu_sync `
+  tests.test_run_control_store `
+  tests.test_run_service -v
 ```
 
-公开环境中，与未公开企业训练特征或订单级评分文件直接相关的测试会明确跳过，其余测试应通过。
+企业报告、冻结模型和订单级评分文件未公开，因此公开仓库只运行上述合成数据与接口单元测试。授权数据环境生成完整产物后，可运行全部测试。
 
 ## 企业主链（授权数据环境）
 
-在获得授权的数据环境中，将赛题数据放置于配置指定目录后运行：
+在获得授权的数据环境中，将赛题数据放置于配置指定目录。日常分析使用冻结模型推理，不重新训练：
+
+```powershell
+& ".\.venv\Scripts\python.exe" "src\run_frozen_company_pipeline.py"
+```
+
+只有管理员需要重新训练、评估并冻结新模型时才运行：
 
 ```powershell
 & ".\.venv\Scripts\python.exe" "src\run_company_pipeline.py"
@@ -123,6 +135,19 @@ python -m venv .venv
 - 模型审计。
 
 详细的字段类型、主外键、关联基数和自动化配置见[飞书十一表数据字典与自动化配置](docs/飞书十一表数据字典与自动化配置.md)和[飞书实施说明](docs/feishu_setup.md)。
+
+## 飞书前端触发后端
+
+安装后端依赖并启动本地异步服务：
+
+```powershell
+& ".\.venv\Scripts\python.exe" -m pip install -r requirements-all.txt
+& ".\.venv\Scripts\python.exe" "src\backend_api.py"
+```
+
+服务提供`POST /api/runs`、`GET /api/runs/{run_id}`和`GET /api/health`。普通运行加载冻结模型推理，不重新训练；运行状态回写飞书`运行控制`表。字段配置、鉴权和安全开关见[飞书前端触发后端运行手册](docs/飞书前端触发后端运行手册.md)。
+
+比赛演示可另开PowerShell窗口执行`cloudflared tunnel --url http://127.0.0.1:8000`生成临时HTTPS地址，再把`/api/runs`地址填入飞书HTTP自动化。临时地址重启后会变化。
 
 ## 项目结构
 
