@@ -127,6 +127,30 @@ class CompanyExtensionsTest(unittest.TestCase):
         self.assertEqual(
             {row["关联任务编号"] for row in feedback_rows}, completed_tasks
         )
+
+    def test_process_log_responsibility_roles_match_feishu_options(self) -> None:
+        rows = _read_csv(FEISHU / "企业风险处置时间线.csv")
+        allowed_roles = {
+            "系统",
+            "渠智罗盘",
+            "销售/商务",
+            "客户经理",
+            "财务",
+            "信用管理",
+            "法务",
+            "审批人",
+            "任务负责人",
+        }
+        self.assertTrue({row["责任角色"] for row in rows} <= allowed_roles)
+        task_rows = [
+            row
+            for row in rows
+            if row["流程阶段"] in {"处置任务", "结果回流"}
+        ]
+        self.assertGreater(len(task_rows), 0)
+        self.assertEqual(
+            {row["责任角色"] for row in task_rows}, {"任务负责人"}
+        )
         self.assertTrue(all(row["过程事件编号"].startswith("PE-") for row in rows))
         self.assertTrue(all(row["对象类型"] for row in rows))
         self.assertTrue(all("关联任务编号" in row for row in rows))

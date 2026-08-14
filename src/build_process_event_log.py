@@ -11,6 +11,19 @@ import pandas as pd
 from project_paths import portable_path
 
 
+ALLOWED_RESPONSIBILITY_ROLES = {
+    "系统",
+    "渠智罗盘",
+    "销售/商务",
+    "客户经理",
+    "财务",
+    "信用管理",
+    "法务",
+    "审批人",
+    "任务负责人",
+}
+
+
 def _task_sla(task: dict[str, object]) -> str:
     due = pd.to_datetime(str(task.get("截止日期", "")), errors="coerce")
     completed = pd.to_datetime(str(task.get("完成时间", "")), errors="coerce")
@@ -106,7 +119,7 @@ def build_process_event_log(
                     "事件时间": task.get("创建时间", event["触发时间"]),
                     "流程阶段": "处置任务",
                     "事件说明": f"{task['审批状态']} / {task['执行状态']}",
-                    "责任角色": task["负责人"],
+                    "责任角色": "任务负责人",
                     "SLA状态": sla,
                     "数据性质": "系统任务状态",
                 }
@@ -122,7 +135,7 @@ def build_process_event_log(
                         "事件时间": task["完成时间"],
                         "流程阶段": "结果回流",
                         "事件说明": task.get("执行结果", ""),
-                        "责任角色": task["负责人"],
+                        "责任角色": "任务负责人",
                         "SLA状态": sla,
                         "数据性质": "人工反馈",
                     }
@@ -130,6 +143,11 @@ def build_process_event_log(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output = pd.DataFrame(rows)
     if not output.empty:
+        invalid_roles = sorted(
+            set(output["责任角色"].astype(str)) - ALLOWED_RESPONSIBILITY_ROLES
+        )
+        if invalid_roles:
+            raise ValueError(f"责任角色包含飞书未配置的选项：{', '.join(invalid_roles)}")
         output["关联任务编号"] = output["风险事件编号"].map(
             lambda event_id: tasks_by_event.get(event_id, {}).get("任务编号", "")
         )
